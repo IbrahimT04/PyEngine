@@ -19,7 +19,7 @@ class Window:
         if not glfw.init():
             raise SystemError("Could not initialize glfw")
 
-        self._win = glfw.create_window(1800, 1200, title, None, None)
+        self._win = glfw.create_window(width, height, title, None, None)
 
         if not self._win:
             glfw.terminate()
