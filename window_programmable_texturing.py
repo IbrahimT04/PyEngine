@@ -112,7 +112,7 @@ class Window:
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
         image = Image.open("textures/trak_light2.jpg")
-        image = image.transpose(Image.FLIP_TOP_BOTTOM)
+        image = image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 
         image_data = image.convert('RGBA').tobytes()
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data)
