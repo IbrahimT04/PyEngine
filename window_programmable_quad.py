@@ -8,7 +8,8 @@ class Window:
 
     vertices = np.array([-0.5, -0.5, 0.0,    1.0, 0.0, 0.0,
                                 0.5, -0.5, 0.0,     0.0, 1.0, 0.0,
-                                0.0, 0.5, 0.0,     0.0, 0.0, 1.0,],
+                                -0.5, 0.5, 0.0,     0.0, 0.0, 1.0,
+                                0.5, 0.5, 0.0,      1.0, 1.0, 1.0],
                                 dtype=np.float32)
 
 
@@ -45,14 +46,6 @@ class Window:
 
     def draw(self):
         vertices = self.vertices
-        """
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glVertexPointer(3, GL_FLOAT, 0, vertices)
-
-        colors = self.colors
-        glEnableClientState(GL_COLOR_ARRAY)
-        glColorPointer(3, GL_FLOAT, 0, colors)
-        """
 
         vertex_src, fragment_src = self.get_shaders('old')
 
@@ -61,16 +54,6 @@ class Window:
         VBO = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, VBO)
         glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
-
-        """
-        position = glGetAttribLocation(shader,"a_position")
-        glEnableVertexAttribArray(position)
-        glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
-
-        color = glGetAttribLocation(shader, "a_color")
-        glEnableVertexAttribArray(color)
-        glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
-        """
 
         glEnableVertexAttribArray(0)
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
@@ -98,9 +81,7 @@ class Window:
 
             # glRotatef( abs(sin(ct) * 0.1), 0, 1, 0)
 
-            # glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
-
-            glDrawArrays(GL_TRIANGLES, 0, 3)
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
 
             glfw.swap_buffers(self._win)
 

@@ -8,8 +8,15 @@ class Window:
 
     vertices = np.array([-0.5, -0.5, 0.0,    1.0, 0.0, 0.0,
                                 0.5, -0.5, 0.0,     0.0, 1.0, 0.0,
-                                0.0, 0.5, 0.0,     0.0, 0.0, 1.0,],
+                                -0.5, 0.5, 0.0,     0.0, 0.0, 1.0,
+                                0.5, 0.5, 0.0,      1.0, 1.0, 1.0,
+                                0.0, 0.75, 0.0,     1.0, 1.0, 0.0],
                                 dtype=np.float32)
+
+    indices = np.array([0, 1, 2,
+                            1, 2, 3,
+                            2, 3, 4],
+                            np.uint32)
 
 
     def __init__(self, width:int = 1800, height:int = 1200, title:str = "My Window"):
@@ -45,14 +52,7 @@ class Window:
 
     def draw(self):
         vertices = self.vertices
-        """
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glVertexPointer(3, GL_FLOAT, 0, vertices)
-
-        colors = self.colors
-        glEnableClientState(GL_COLOR_ARRAY)
-        glColorPointer(3, GL_FLOAT, 0, colors)
-        """
+        indices = self.indices
 
         vertex_src, fragment_src = self.get_shaders('old')
 
@@ -62,15 +62,9 @@ class Window:
         glBindBuffer(GL_ARRAY_BUFFER, VBO)
         glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
 
-        """
-        position = glGetAttribLocation(shader,"a_position")
-        glEnableVertexAttribArray(position)
-        glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
-
-        color = glGetAttribLocation(shader, "a_color")
-        glEnableVertexAttribArray(color)
-        glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
-        """
+        EBO = glGenBuffers(1)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL_STATIC_DRAW)
 
         glEnableVertexAttribArray(0)
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
@@ -83,24 +77,17 @@ class Window:
 
 
     def main_loop(self):
+        num_indices = len(self.indices)
         while not glfw.window_should_close(self._win):
 
             glfw.poll_events()
 
             glClear(GL_COLOR_BUFFER_BIT)
 
-            ct = glfw.get_time()
+            #glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
 
-            glLoadIdentity()
-            glScale(abs(sin(ct)), abs(sin(ct)), 1)
-            glRotatef(sin(ct) * 45, 0, 0, 1)
-            glTranslate(sin(ct), cos(ct), 0)
+            glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, ctypes.c_void_p(0))
 
-            # glRotatef( abs(sin(ct) * 0.1), 0, 1, 0)
-
-            # glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
-
-            glDrawArrays(GL_TRIANGLES, 0, 3)
 
             glfw.swap_buffers(self._win)
 
