@@ -35,7 +35,7 @@ def smoothstep(x): return x * x * (3 - 2 * x)
 def ease_out_cubic(x): return 1 - pow(1 - x, 3)
 
 # ---------- Shaders ----------
-VERT_TRI = b"""
+VERT_TRI = """
 #version 330 core
 layout(location=0) in vec3 a_pos;
 layout(location=1) in vec3 a_col;
@@ -47,14 +47,14 @@ void main() {
     gl_Position = u_vp * u_model * vec4(a_pos, 1.0);
 }
 """
-FRAG_TRI = b"""
+FRAG_TRI = """
 #version 330 core
 in vec3 v_col;
 out vec4 o_color;
 void main(){ o_color = vec4(v_col, 1.0); }
 """
 
-VERT_UI = b"""
+VERT_UI = """
 #version 330 core
 layout(location=0) in vec2 a_pos;
 layout(location=1) in vec2 a_uv;
@@ -68,7 +68,7 @@ void main(){
     gl_Position = u_proj * vec4(a_pos, 0.0, 1.0);
 }
 """
-FRAG_UI = b"""
+FRAG_UI = """
 #version 330 core
 in vec2 v_uv;
 in float v_alpha;
@@ -85,23 +85,23 @@ void main(){
 
 def compile_program(vs_src: bytes, fs_src: bytes) -> int:
     vs = glCreateShader(GL_VERTEX_SHADER)
-    glShaderSource(vs, vs_src.decode())
+    glShaderSource(vs, vs_src)
     glCompileShader(vs)
     if not glGetShaderiv(vs, GL_COMPILE_STATUS):
-        raise RuntimeError(glGetShaderInfoLog(vs).decode())
+        raise RuntimeError(glGetShaderInfoLog(vs))
 
     fs = glCreateShader(GL_FRAGMENT_SHADER)
-    glShaderSource(fs, fs_src.decode())
+    glShaderSource(fs, fs_src)
     glCompileShader(fs)
     if not glGetShaderiv(fs, GL_COMPILE_STATUS):
-        raise RuntimeError(glGetShaderInfoLog(fs).decode())
+        raise RuntimeError(glGetShaderInfoLog(fs))
 
     prog = glCreateProgram()
     glAttachShader(prog, vs)
     glAttachShader(prog, fs)
     glLinkProgram(prog)
     if not glGetProgramiv(prog, GL_LINK_STATUS):
-        raise RuntimeError(glGetProgramInfoLog(prog).decode())
+        raise RuntimeError(glGetProgramInfoLog(prog))
 
     glDeleteShader(vs); glDeleteShader(fs)
     return prog
